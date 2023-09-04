@@ -1,6 +1,7 @@
 package com.operation.fraction;
 
 import com.operation.helper.Factorizer;
+import com.operation.helper.LCMFinder;
 import com.operation.helper.Simplifier;
 
 import java.util.Scanner;
@@ -12,9 +13,9 @@ public class Fractions {
     Factorizer factorizeNumerator;
     Factorizer factorizeDenominator;
     Simplifier simplifier;
+    LCMFinder lcmFinder;
 
     public Fractions(){
-
         input=new Scanner(System.in);
         new LoadFractions(firstFraction,secondFraction,input);
         setOperation();
@@ -22,7 +23,7 @@ public class Fractions {
 
     public void setOperation(){
         input=new Scanner(System.in);
-        System.out.println("select an operation, press any of these symbols '/', '+', '-','*'");
+        System.out.println("select an operation, press a key with any of these symbols '/', '+', '-','*'");
         String symbol=input.nextLine();
         switch (symbol) {
             case "/" -> {
@@ -31,6 +32,7 @@ public class Fractions {
             }
             case "+" -> {
                 System.out.println("operation selected: addition");
+                sumFraction();
             }
             default -> symbol = "";
         }
@@ -43,10 +45,29 @@ public class Fractions {
         factorizeNumerator = new Factorizer(resultNumerator);//getting the prime factors
         factorizeDenominator=new Factorizer(resultDenominator);
         simplify();
-
     }
-    public void sumFraction(){
 
+    public void sumFraction() {
+        if(firstFraction[1] != secondFraction[1]){
+            //find the LCM of all denominators
+            lcmFinder = new LCMFinder(firstFraction[1], secondFraction[1]);
+            //multiplying the numerator by the quotient of the (LCM ÷ denominator) to get the equivalent where the lcd is its denominator
+            int leftNumerator = firstFraction[0] * (lcmFinder.getLCM() / firstFraction[1]);
+            int rightNumerator = secondFraction[0] * (lcmFinder.getLCM() / secondFraction[1]);
+            //perform the operation with numerators only, place the result over the common denominator
+            firstFraction[0] = leftNumerator + rightNumerator;
+            firstFraction[1] = lcmFinder.getLCM();// <-- common denominator
+            System.out.println("non simplified fraction: [" + firstFraction[0] + "/" + firstFraction[1] + "], the LCM is: " + lcmFinder.getLCM());
+        } else if( firstFraction[1] == secondFraction[1]){
+            int leftNumerator = firstFraction[0];
+            int rightNumerator = secondFraction[0];
+            firstFraction[0] = leftNumerator + rightNumerator;
+            System.out.println("non simplified fraction: [" + firstFraction[0] + "/" + firstFraction[1] + "]");
+        }
+        //simplify the fraction
+        factorizeNumerator = new Factorizer(firstFraction[0]);
+        factorizeDenominator = new Factorizer(firstFraction[1]);
+        simplify();
     }
     public void simplify(){
         simplifier= new Simplifier(factorizeNumerator,factorizeDenominator);
