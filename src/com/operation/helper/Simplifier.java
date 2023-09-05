@@ -27,22 +27,11 @@ public class Simplifier {
         }
     }
     public void cancelNumeratorAndDenominator(){
-        //choosing the least range of iteration to replace values in the array to simplify
-        int limit1;
-        int limit2;
-        if (this.numerator.length > this.denominator.length){
-            limit1 = this.denominator.length;
-            limit2=this.numerator.length;
-        }
-        else{
-            limit1 = this.numerator.length;
-            limit2=this.denominator.length;
-        }
         /*cancelling with 0 the common factors between the numerator and denominator instead of deleting it.
         * non cancelled values will be multiplied in the two methods from below:
         * getSimplifiedNumerator(), getSimplifiedDenominator() */
-        for (int i = 0; i < limit1; i++) {
-            for( int j=0; j < limit2; j++){
+        for (int i = 0; i < numerator.length; i++) {
+            for( int j=0; j < denominator.length; j++){
                 if (this.numerator[i] == this.denominator[j]) {
                     this.numerator[i] = 0;
                     this.denominator[j] = 0;
