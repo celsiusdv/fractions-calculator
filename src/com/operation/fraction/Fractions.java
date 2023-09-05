@@ -39,6 +39,10 @@ public class Fractions {
                 multiplyFraction();
 
             }
+            case "-" -> {
+                System.out.println("operation selected: subtraction");
+                subtractFraction();
+            }
             default -> symbol = "";
         }
         input.close();
@@ -59,7 +63,6 @@ public class Fractions {
         factorizeDenominator=new Factorizer(resultDenominator);
         simplify();
     }
-
     public void sumFraction() {
         int leftNumerator;
         int rightNumerator;
@@ -87,6 +90,32 @@ public class Fractions {
         simplify();
     }
 
+    public void subtractFraction(){
+        int leftNumerator;
+        int rightNumerator;
+        int resultNumerator=0;
+        int resultDenominator=0;
+        if(firstFraction[1] != secondFraction[1]){
+            //find the LCM of all denominators
+            lcmFinder = new LCMFinder(firstFraction[1], secondFraction[1]);
+            //multiplying the numerator by the quotient (LCM ÷ denominator) to get the equivalent fraction
+            leftNumerator = firstFraction[0] * (lcmFinder.getLCM() / firstFraction[1]);
+            rightNumerator = secondFraction[0] * (lcmFinder.getLCM() / secondFraction[1]);
+            //perform the operation with numerators only, place the result over the common denominator
+            resultNumerator = leftNumerator - rightNumerator;
+            resultDenominator = lcmFinder.getLCM();// <-- common denominator
+            System.out.println("non simplified fraction: [" + resultNumerator + "/" + resultDenominator + "], the LCM is: " + lcmFinder.getLCM());
+        } else if( firstFraction[1] == secondFraction[1]){
+            leftNumerator = firstFraction[0];
+            rightNumerator = secondFraction[0];
+            resultNumerator = leftNumerator - rightNumerator;
+            resultDenominator=firstFraction[1];// <-- common denominator for both fractions
+            System.out.println("non simplified fraction: [" + resultNumerator + "/" + resultDenominator + "]");
+        }
+        factorizeNumerator = new Factorizer(resultNumerator);
+        factorizeDenominator=new Factorizer(resultDenominator);
+        simplify();
+    }
     public void simplify(){
         simplifier= new Simplifier(factorizeNumerator,factorizeDenominator);
         System.out.println("simplified fraction: ["+
